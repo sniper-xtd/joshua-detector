@@ -1,10 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  serverExternalPackages: ["onnxruntime-node"],
-  outputFileTracingIncludes: {
-    "/api/predict": ["./model/*.onnx"],
-  },
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;

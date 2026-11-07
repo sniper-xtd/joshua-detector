@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  serverExternalPackages: ["onnxruntime-node"],
+  outputFileTracingIncludes: {
+    "/api/predict": ["./model/*.onnx"],
+  },
 };
 
 export default nextConfig;

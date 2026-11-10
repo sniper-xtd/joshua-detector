@@ -224,6 +224,17 @@ export default function Home() {
   const confidence = result ? Math.round(result.confidence * 1000) / 10 : 0;
   const joshuaCount =
     result?.boxes.filter((box) => box.label.toLowerCase() === "joshua").length ?? 0;
+  const distinctLabels = Array.from(
+    new Set((result?.boxes ?? []).map((box) => box.label)),
+  );
+  // If boxes come back but none carry the "joshua" class, the endpoint is almost
+  // certainly serving a base model instead of the custom-trained one.
+  const wrongModelSuspected =
+    phase === "done" &&
+    result !== null &&
+    !result.is_joshua &&
+    result.boxes.length > 0 &&
+    joshuaCount === 0;
 
   return (
     <div className={styles.page}>
@@ -376,6 +387,13 @@ export default function Home() {
                       ? "A person was found, but not Joshua with enough confidence."
                       : "The model did not find a person in this photo."}
                 </p>
+                {wrongModelSuspected && (
+                  <p className={styles.resultWarning}>
+                    The endpoint returned {distinctLabels.join(", ")} — not “joshua”. It is
+                    probably serving a base model instead of your trained model. Check the
+                    Ultralytics deployment and its class list.
+                  </p>
+                )}
                 <div className={styles.actions}>
                   <button type="button" className={styles.primaryButton} onClick={reset}>
                     Scan another photo

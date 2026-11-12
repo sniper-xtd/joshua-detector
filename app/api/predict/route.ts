@@ -4,7 +4,7 @@ export const runtime = "nodejs";
 // The Ultralytics endpoint scales to zero, so a cold start can take ~1 minute.
 export const maxDuration = 60;
 
-const JOSHUA_CONFIDENCE = 0.6;
+const MATCH_CONFIDENCE = Number(process.env.MATCH_CONFIDENCE ?? 0.6);
 const UPSTREAM_TIMEOUT_MS = 55_000;
 
 type RawBox = { x1?: number; y1?: number; x2?: number; y2?: number };
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
     .sort((a, b) => b.confidence - a.confidence);
 
   const match = boxes.find(
-    (box) => box.label.toLowerCase() === "joshua" && box.confidence >= JOSHUA_CONFIDENCE,
+    (box) => box.label.toLowerCase() === "joshua" && box.confidence >= MATCH_CONFIDENCE,
   );
 
   if (match) {
